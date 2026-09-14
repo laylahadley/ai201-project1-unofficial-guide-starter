@@ -58,11 +58,16 @@ Why is this knowledge hard to find through official channels?
      A review-heavy corpus warrants different chunking than a long FAQ. -->
 
 **Chunk size:**
+     - 500 tokens (roughly 1,500 to 2,000 characters)
 
 **Overlap:**
+     - 50 tokens (roughly 150 to 200 characters)
 
 **Reasoning:**
-
+     - This corpus contains a highly diverse mix of document structures, requiring a balanced chunking approach:
+          - For the short-form content (RateMyProfessors, Reddit threads): A 500-token chunk is large enough to encompass an entire individual Reddit comment or multiple consecutive RateMyProfessors reviews. This prevents a single sentence of a student's anecdote from being stripped of its surrounding context (e.g., separating the professor's name from the critique of their grading style).
+          - For the long-form content (News articles, University websites, PDF Guide): 500 tokens is ideal for isolating specific themes, like a single program description from the HPS Center website, or one particular recruiting timeline phase from the HUSB Recruitment Guide, without pulling in irrelevant sections.
+          - The 50-token overlap acts as a safety net for the longer texts. It ensures that when a continuous thought, timeline step, or interview anecdote gets split between two chunks, the retrieval system doesn't lose the connecting sentence that ties the context together.
 ---
 
 ## Retrieval Approach
@@ -74,10 +79,16 @@ Why is this knowledge hard to find through official channels?
      support, accuracy on domain-specific text, latency? -->
 
 **Embedding model:**
+     - BAAI/bge-m3 (via HuggingFace/sentence-transformers)
 
 **Top-k:**
+     - (This retrieves approximately 2,500 tokens of context, which provides a diverse mix of sources without overwhelming the LLM's context window or diluting the answer with irrelevant chunks).
 
 **Production tradeoff reflection:**
+     - If cost and compute were not constraints for a real-world deployment, here is how I would weigh the architectural tradeoffs:
+          - Accuracy on domain-specific text: The corpus contains a mix of highly formal corporate/academic text (recruitment guides) and highly informal, culturally specific slang (Reddit threads discussing "The Mecca," "HUSB," and Wall Street "superdays")
+          - Context length: my current strategy uses 500-token chunks. However, if I wanted to preserve the entire narrative of a multi-page PDF recruitment guide or a deeply nested, multi-comment Reddit thread in a single vector, I would weigh upgrading to a model with a massive context window (such as Qwen3-Embedding-8B, which supports up to 32,000 tokens).
+          - Latency: For a student-facing chatbot, real-time response is critical. Using a massive model with 3,072 dimensions might slightly increase retrieval accuracy (MTEB score) but would increase vector database storage, compute costs, and retrieval latency.
 
 ---
 
@@ -90,11 +101,13 @@ Why is this knowledge hard to find through official channels?
 
 | # | Question | Expected answer |
 |---|----------|-----------------|
-| 1 | | |
-| 2 | | |
-| 3 | | |
-| 4 | | |
-| 5 | | |
+| 1 |Based on student reviews and forum advice, which specific business or finance professors are known to be strong mentors and write good recommendation letters, even if their classes are considered difficult?
+ |Based on RateMyProfessors and Reddit ("incoming students" thread), students frequently advise looking past strict grading rubrics to find mentors. While specific professors are often flagged as "tough graders" or having heavy workloads, the "whisper network" emphasizes that these exact professors, particularly those with long-standing industry connections in the finance department, are the ones who write the most influential, personalized letters of recommendation and directly refer students to Wall Street alumni. |
+| 2 |According to the 2022-2023 HUSB Recruitment Guide, what is the exact timeline for finance and business recruiting, and what are the formal steps I need to take to prepare my application?  
+|According to the official HUSB (Howard University School of Business) Recruitment Guide, the primary recruiting timeline centers around the Fall and Spring career fairs, with major Wall Street and corporate finance firms often fast-tracking applications early in the Fall semester. The formal steps require students to engage directly with the Office of Career Services, polish their resumes for official "resume drops," attend mandatory corporate information sessions, and submit applications strictly adhering to firm deadlines. |
+| 3 |What specific resources, training, or corporate pipelines does the HPS Center for Financial Excellence provide to help Howard students break into Wall Street? |The HPS Center for Financial Excellence provides a direct pipeline to Wall Street by offering specialized academic concentrations, including Investment Banking, Capital Markets & Trading, and Private Equity. According to Howard's website and The Dig, the Center features the "Wall Street on Campus" initiative, which brings practicing professionals directly to students for interactive experiences. It is specifically mandated to increase diversity in elite financial services by bridging academic theory with real-world executive mentorship. |
+| 4 |Based on the HBCU Connect article about the Wells Fargo info session, what specific divisions of corporate and investment banking recruit at Howard, and how can students leverage these specific interactive sessions for networking? |The HBCU Connect article specifically highlights that the Corporate & Investment Banking (CIB) division of Wells Fargo recruits directly at Howard. Students are advised to leverage these interactive sessions by networking directly with visiting professionals, program managers, and recruiters to secure "exclusive tips" on the hiring process. Furthermore, attendees who register and participate often gain access to secondary, invite-only networking opportunities like private "coffee chats" to stand out from the broader applicant pool.|
+| 5 |When comparing Howard to other DC-area schools like American University, what do student anecdotes on Reddit identify as Howard's unique advantage for securing top finance internships? |On the Reddit r/HowardUniversity thread, student anecdotes strongly assert that Howard's School of Business (SOB) provides vastly superior recruiting opportunities compared to American University, George Washington (GW), or George Mason. The unique advantage is the targeted corporate pipeline: students note that top financial firms explicitly seek out Howard to recruit Black talent. Students claim that combining the cultural environment of the HBCU experience with this highly targeted, top-tier corporate recruiting makes the Howard experience, and subsequent internship placements, significantly better than attending a PWI in the same city. |
 
 ---
 
@@ -104,9 +117,13 @@ Why is this knowledge hard to find through official channels?
      Consider: noisy or inconsistent documents, missing source attribution, off-topic
      retrieval, chunks that split key information across boundaries. -->
 
-1.
+1. Semantic mismatch between formal and informal sources
+     - The risk - The retriever may fail to connect a user's informal query to official resources, or vice versa, causing critical information to be ignored.
+     - the reasoning - The corpus contains a stark contrast in vocabulary. Official documents use formal corporate terminology ("Information Session," "Corporate & Investment Banking," "HUSB"), while Reddit and RateMyProfessors rely on student slang and industry shorthand ("superday," "sweaty," "target school," "GPA killer"). A standard embedding model might fail to recognize that a student asking about "IB pipelines" is semantically looking for the "HPS Center for Financial Excellence," leading to poor retrieval precision.
 
-2.
+2. Conflicting claims and source authority confusion
+     - the risk - The LLM may generate contradictory or misleading advice by blending official university policy with subjective student grievances.
+     - the reasoning - RAG systems struggle when presented with conflicting evidence without explicit metadata weighting. For example, the HUSB Recruitment Guide might promote a specific mandatory course as an "essential networking step," while a RateMyProfessors chunk might strongly advise students to avoid that exact professor to protect their GPA. If the system does not explicitly attribute these chunks to their distinct sources (official policy vs. subjective peer review), it may confidently output contradictory instructions to the user.
 
 ---
 
@@ -118,6 +135,42 @@ Why is this knowledge hard to find through official channels?
      You can use ASCII art, a Mermaid diagram, or embed a sketch as an image.
      You'll use this diagram as context when prompting AI tools to implement each stage. -->
 
+flowchart 
+
+
+    %% Define styles for clarity
+    classDef ingest fill:#f9f871,stroke:#333,stroke-width:1px,color:#333
+    classDef chunk fill:#ffc75f,stroke:#333,stroke-width:1px,color:#333
+    classDef embed fill:#ff9671,stroke:#333,stroke-width:1px,color:#333
+    classDef store fill:#d4a5a5,stroke:#333,stroke-width:1px,color:#333
+    classDef retrieve fill:#ff6f91,stroke:#333,stroke-width:1px,color:#333
+    classDef generate fill:#d65db1,stroke:#333,stroke-width:1px,color:#fff
+    classDef input fill:#845ec2,stroke:#333,stroke-width:1px,color:#fff
+
+    %% Nodes and Pipeline Flow
+    Q([User Query]) ::: input
+    
+    subgraph Data Pipeline
+        direction TB
+        A[1. Document Ingestion<br>BeautifulSoup & pdfplumber] ::: ingest
+        B[2. Chunking<br>LangChain Recursive Splitter<br>Size: 500 | Overlap: 50] ::: chunk
+        C[3. Embedding<br>sentence-transformers<br>bge-m3] ::: embed
+        D[(Vector Store<br>ChromaDB)] ::: store
+        
+        A --> B --> C --> D
+    end
+
+    subgraph Query Execution
+        direction TB
+        R[4. Retrieval<br>ChromaDB Retriever<br>Top-k = 5] ::: retrieve
+        G[5. Generation<br>LLM <br>Gemini / Claude] ::: generate
+    end
+
+    %% Connect the flows
+    Q --> R
+    D -. Fetches Chunks .-> R
+    R --> G
+    G --> Ans([Final Answer]) ::: input
 ---
 
 ## AI Tool Plan
