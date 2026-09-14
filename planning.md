@@ -10,6 +10,23 @@
 ## Domain
 
 <!-- What domain did you choose? Why is this knowledge valuable and hard to find through official channels? -->
+Domain:
+     - Internship and Recruiting Knowledge for Howard University Finance and Business Students
+
+Why is this domain useful:
+     - For finance and business students at Howard University, securing highly coveted internships (particularly in investment banking, corporate finance, and consulting) requires more than just a high GPA. The recruiting timeline for Wall Street and top business firms is notoriously accelerated and highly competitive. This domain provides the tactical "playbook" for success by synthesizing both formal institutional resources and informal student networks.
+          - targeted interview prep
+          - relevant extracurriculars
+          - mentorship
+          - networking methods
+
+Why is this knowledge hard to find through official channels?
+     - While Howard University provides excellent formal resources (like the HUSB Recruitment Guide and the HPS Center websites), the most critical recruiting intelligence exists in a "whisper network." This information is rarely found in official university brochures because:
+          - nuance and unwritten rules: Official channels will tell a student to "get involved in student organizations." They will not explicitly tell a student which specific organizations have the most aggressive interview prep regimens, or which club's alumni base routinely fast-tracks resumes past the initial HR screening.
+          - Real-Time Student Experiences: News (like The Dig) highlights successful outcomes and high-level corporate partnerships. However, the granular, day-to-day reality of the recruiting grind, i.e. how to answer specific technical questions, how to handle rejection, or how Howard compares locally to schools like American University, is primarily shared through anonymous forums like Reddit and HBCU Connect.
+          - Rapidly Changing Recruiting Landscapes: Firm preferences and recruiting timelines shift year to year. Informal channels update much faster than a university's official annual recruitment PDF, giving students a real-time pulse on when applications actually open and close.
+
+
 
 ---
 
@@ -20,16 +37,16 @@
 
 | # | Source | Description | URL or location |
 |---|--------|-------------|-----------------|
-| 1 | | | |
-| 2 | | | |
-| 3 | | | |
-| 4 | | | |
-| 5 | | | |
-| 6 | | | |
-| 7 | | | |
-| 8 | | | |
-| 9 | | | |
-| 10 | | | |
+| 1 |reddit |Howard v. American |https://www.reddit.com/r/HowardUniversity/comments/1bo7x3i/howard_v_american_and_other_dc_area_schools/|
+| 2 |Black Enterprise |Howard Finance Career Pipeline |https://www.blackenterprise.com/howard-university-graduates-finance-careers/ |
+| 3 |Howard SOB Website |Student Forum |https://business.howard.edu/centers/hps-center-financial-excellence/students |
+| 4 |The Dig - HU News |Howard to WallStreet Pipeline |https://thedig.howard.edu/all-stories/mecca-wall-street-howards-hps-center-shaping-future-finance |
+| 5 |Plexxus |Howard Finance Career Pipeline |https://plexuss.com/f3/howard-university-internship-opportunities-for-students |
+| 6 |Howard Forum |Howard Career Pipeline |https://business.howard.edu/sites/business.howard.edu/files/2022-05/2022-2023%20HUSB%20Recruitment%20Guide%20.pdf |
+| 7 |Reddit |Helpful Info for incoming freshman |https://www.reddit.com/r/HowardUniversity/comments/1c6h31d/what_should_incoming_howard_students_know/ |
+| 8 |HBCU Connect |Wells Fargo HBCU Recruitment |https://hbcuconnect.com/content/401535/wells-fargo-hosts-interactive-info-session-for-howard-university-students-explore-careers-in-corporate-investment-banking |
+| 9 |HPS Center for Finance |Center for Financial Excellence |https://business.howard.edu/centers/hps-center-financial-excellence |
+| 10 |Rate my Professor |HU Finance Professors |https://www.ratemyprofessors.com/search/professors/421?q=*&did=21 |
 
 ---
 
